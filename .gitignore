@@ -1,7 +1,45 @@
-# Node/React
+o# Node modules
 node_modules/
-.env
-db.json
 
-# OS files
+# OS & system files
 .DS_Store
+Thumbs.db
+.Xauthority
+.bash_history
+.bash_logout
+.bashrc
+.profile
+.sudo_as_admin_successful
+.viminfo
+
+# Any cache
+.cache/
+npm/_cacache/
+
+# Node modules
+node_modules/
+
+# OS & system files
+.DS_Store
+Thumbs.db
+.Xauthority
+.bash_history
+.bash_logout
+.bashrc
+.profile
+.sudo_as_admin_successful
+.viminfo
+
+# NPM / cache
+.cache/
+.npm/
+
+# SSH keys
+.ssh/
+
+# Any other frontend/backend temp files
+frontend/
+snap/
+clean-repo/
+.git-credentials
+.gitconfig
