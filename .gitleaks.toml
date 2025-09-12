@@ -1,0 +1,16 @@
+[[rules]]
+description = "ignore npm cache"
+regex = "(?i)^.*$"
+paths = [".npm/"]
+title = "Gitleaks Config"
+
+# Ignore npm cache folder
+[allowlist]
+    description = "Ignore npm cache"
+    regex = ".npm/"
+
+# Optional: Ignore package lock versions
+[[allowlist.rules]]
+    description = "Ignore version strings in package.json"
+    regex = "0\\.\\d+\\.\\d+(-canary-[a-z0-9-]+)?"
+
