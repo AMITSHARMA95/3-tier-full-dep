@@ -1,0 +1,22 @@
+title = "Gitleaks config"
+
+# Ignore npm cache folder
+[[rules]]
+description = "Ignore npm cache"
+regex = ".*\\.npm/_cacache/.*"
+
+# Ignore node_modules
+[[rules]]
+description = "Ignore node_modules"
+regex = ".*node_modules/.*"
+
+# Ignore package-lock.json secrets like default password or JWT secret
+[[rules]]
+description = "Ignore package-lock.json default secrets"
+regex = "***REMOVED***|***REMOVED***"
+
+# Ignore .env file if accidentally present
+[[rules]]
+description = "Ignore .env"
+regex = ".*\\.env"
+
