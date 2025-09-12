@@ -1,30 +1,57 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../axios"; // axios instance import
 
-export default function RegisterForm({ setUser }) {
+function RegisterForm({ setUser }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!name || !email || !password) return alert("All fields required!");
+  const handleRegister = async (e) => {
+    e.preventDefault(); // button click page reload rokega
     try {
-      await axios.post("http://localhost:5000/register", { name, email, password });
-      localStorage.setItem("username", name);
+      const res = await api.post("/register", { name, email, password });
+      alert(res.data.message);
       setUser(name);
-      setName(""); setEmail(""); setPassword("");
-    } catch (err) { console.error(err); }
+      localStorage.setItem("username", name);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Error occurred");
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow flex-1">
-      <h3 className="font-bold mb-2">Register</h3>
-      <input placeholder="Name" value={name} onChange={e => setName(e.target.value)} className="w-full p-2 mb-2 border rounded"/>
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="w-full p-2 mb-2 border rounded"/>
-      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="w-full p-2 mb-2 border rounded"/>
-      <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Register</button>
+    <form onSubmit={handleRegister} className="bg-white p-4 rounded shadow">
+      <h2 className="font-semibold mb-2">Register</h2>
+      <input
+        type="text"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="mb-2 w-full p-2 border rounded"
+        required
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="mb-2 w-full p-2 border rounded"
+        required
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="mb-2 w-full p-2 border rounded"
+        required
+      />
+      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        Register
+      </button>
     </form>
   );
 }
+
+export default RegisterForm;
 

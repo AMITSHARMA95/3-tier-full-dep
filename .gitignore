@@ -44,3 +44,12 @@ clean-repo/
 .git-credentials
 .gitconfig
 .env
+
+
+
+
+# .gitignore
+node_modules/
+.npm/
+package-lock.json
+

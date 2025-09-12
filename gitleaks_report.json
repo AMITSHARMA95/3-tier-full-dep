@@ -1,0 +1,42 @@
+[
+ {
+  "Description": "Ignore .env",
+  "StartLine": 46,
+  "EndLine": 46,
+  "StartColumn": 1,
+  "EndColumn": 4,
+  "Match": ".env",
+  "Secret": ".env",
+  "File": ".gitignore",
+  "SymlinkFile": "",
+  "Commit": "04dad8e11bd3c71a8e639ffe809ea132364ee47a",
+  "Entropy": 2,
+  "Author": "Ubuntu",
+  "Email": "ubuntu@ip-172-31-38-227.ap-south-1.compute.internal",
+  "Date": "2025-09-12T00:43:13Z",
+  "Message": "Add .env to .gitignore",
+  "Tags": [],
+  "RuleID": "",
+  "Fingerprint": "04dad8e11bd3c71a8e639ffe809ea132364ee47a:.gitignore::46"
+ },
+ {
+  "Description": "Ignore .env",
+  "StartLine": 3,
+  "EndLine": 3,
+  "StartColumn": 2,
+  "EndColumn": 5,
+  "Match": ".env",
+  "Secret": ".env",
+  "File": ".gitignore",
+  "SymlinkFile": "",
+  "Commit": "29d6871ce052554af2d44a49b6a5798bfb0538f9",
+  "Entropy": 2,
+  "Author": "Ubuntu",
+  "Email": "ubuntu@ip-172-31-38-227.ap-south-1.compute.internal",
+  "Date": "2025-09-11T00:40:36Z",
+  "Message": "Initial commit: frontend + backend structure",
+  "Tags": [],
+  "RuleID": "",
+  "Fingerprint": "29d6871ce052554af2d44a49b6a5798bfb0538f9:.gitignore::3"
+ }
+]

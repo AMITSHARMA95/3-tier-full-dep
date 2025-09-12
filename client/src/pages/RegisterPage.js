@@ -1,54 +1,57 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
-import FormCard from "../components/FormCard";
+import React, { useState } from "react";
+import api from "../axios";
 
-export default function RegisterPage() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+export default function RegisterForm({ setUser }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    console.log("Register Data:", form);
+    try {
+      await api.post("/api/register", { name, email, password });
+      setUser(name);
+      localStorage.setItem("username", name);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Registration failed");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
+    <form onSubmit={handleRegister} className="p-4 border rounded shadow w-full md:w-1/2">
+      <h2 className="text-xl mb-2">Register</h2>
+      <input
+        type="text"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="w-full p-2 border rounded mb-2"
+        required
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full p-2 border rounded mb-2"
+        required
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full p-2 border rounded mb-2"
+        required
+      />
+      <button
+        type="submit"
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
-        <FormCard title="Create Account">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="w-full p-2 border rounded"
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full p-2 border rounded"
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full p-2 border rounded"
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-            <motion.button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Register
-            </motion.button>
-          </form>
-        </FormCard>
-      </motion.div>
-    </div>
+        Register
+      </button>
+    </form>
   );
 }
 

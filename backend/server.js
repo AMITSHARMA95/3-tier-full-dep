@@ -1,74 +1,93 @@
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const db = require("./db"); // MySQL connection
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "***REMOVED***",
-  database: "chat_app",
-});
-
-// Register
-app.post("/register", async (req, res) => {
+// ====== REGISTER ======
+app.post("/api/register", async (req, res) => {
   const { name, email, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  db.query(
-    "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-    [name, email, hashedPassword],
-    (err, result) => {
-      if (err) return res.status(500).send(err);
-      res.json({ message: "User registered successfully!" });
-    }
-  );
+  if (!name || !email || !password)
+    return res.status(400).json({ message: "All fields required" });
+
+  try {
+    const [existingUser] = await db.promise().query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+    if (existingUser.length > 0)
+      return res.status(400).json({ message: "User already exists" });
+
+    await db.promise().query(
+      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+      [name, email, password]
+    );
+
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-// Login
-app.post("/login", (req, res) => {
+// ====== LOGIN ======
+app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
-  db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
-    if (err) return res.status(500).send(err);
-    if (results.length === 0) return res.status(400).send({ message: "User not found" });
+  if (!email || !password)
+    return res.status(400).json({ message: "All fields required" });
 
-    const match = await bcrypt.compare(password, results[0].password);
-    if (!match) return res.status(400).send({ message: "Incorrect password" });
+  try {
+    const [users] = await db.promise().query(
+      "SELECT * FROM users WHERE email = ? AND password = ?",
+      [email, password]
+    );
 
-    const token = jwt.sign({ id: results[0].id }, "***REMOVED***");
-    res.json({ token, name: results[0].name });
-  });
+    if (users.length === 0)
+      return res.status(401).json({ message: "Invalid credentials" });
+
+    res.json({ message: "Login successful", user: users[0].name });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-// Post Comment
-app.post("/comments", (req, res) => {
-  const { user_id, message } = req.body;
-  db.query(
-    "INSERT INTO comments (user_id, message) VALUES (?, ?)",
-    [user_id, message],
-    (err, result) => {
-      if (err) return res.status(500).send(err);
-      res.json({ id: result.insertId, user_id, message, created_at: new Date() });
-    }
-  );
+// ====== COMMENTS ======
+app.get("/api/comments", async (req, res) => {
+  try {
+    const [comments] = await db.promise().query(
+      "SELECT * FROM comments ORDER BY created_at DESC"
+    );
+    res.json(comments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-// Get Comments
-app.get("/comments", (req, res) => {
-  db.query(
-    `SELECT comments.id, comments.message, comments.created_at, users.name as username
-     FROM comments JOIN users ON comments.user_id = users.id
-     ORDER BY comments.created_at DESC`,
-    (err, results) => {
-      if (err) return res.status(500).send(err);
-      res.json(results);
-    }
-  );
+app.post("/api/comments", async (req, res) => {
+  const { user, comment } = req.body;
+  if (!user || !comment)
+    return res.status(400).json({ message: "All fields required" });
+
+  try {
+    await db.promise().query(
+      "INSERT INTO comments (user, comment) VALUES (?, ?)",
+      [user, comment]
+    );
+    res.status(201).json({ message: "Comment added successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+// ====== START SERVER ======
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
 

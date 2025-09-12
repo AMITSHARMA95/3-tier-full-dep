@@ -1,0 +1,6 @@
+title = "Gitleaks config"
+
+[[rules]]
+description = "Ignore npm cache"
+regex = ".*\\.npm/_cacache/.*"
+

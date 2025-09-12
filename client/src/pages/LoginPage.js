@@ -1,48 +1,48 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
-import FormCard from "../components/FormCard";
+import React, { useState } from "react";
+import api from "../axios";
 
-export default function LoginPage() {
-  const [form, setForm] = useState({ email: "", password: "" });
+export default function LoginForm({ setUser }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login Data:", form);
+    try {
+      const res = await api.post("/api/login", { email, password });
+      setUser(res.data.user);
+      localStorage.setItem("username", res.data.user);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Login failed");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
+    <form onSubmit={handleLogin} className="p-4 border rounded shadow w-full md:w-1/2">
+      <h2 className="text-xl mb-2">Login</h2>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full p-2 border rounded mb-2"
+        required
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full p-2 border rounded mb-2"
+        required
+      />
+      <button
+        type="submit"
+        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       >
-        <FormCard title="Login">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full p-2 border rounded"
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full p-2 border rounded"
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-            <motion.button
-              type="submit"
-              className="w-full bg-green-600 text-white py-2 rounded"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Login
-            </motion.button>
-          </form>
-        </FormCard>
-      </motion.div>
-    </div>
+        Login
+      </button>
+    </form>
   );
 }
 

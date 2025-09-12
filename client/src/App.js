@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "./axios";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
 import CommentForm from "./components/CommentForm";
@@ -7,7 +7,7 @@ import CommentList from "./components/CommentList";
 
 function App() {
   const [comments, setComments] = useState([]);
-  const [user, setUser] = useState(null); // logged-in user
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetchComments();
@@ -17,14 +17,21 @@ function App() {
 
   const fetchComments = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/comments");
+      const res = await api.get("/api/comments");
       setComments(res.data);
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error("Fetch comments error:", err);
+    }
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("username");
   };
 
   return (
-    <div className="min-h-screen p-4">
-      {/* Banner */}
+    <div className="min-h-screen p-4 bg-gray-100">
+      {/* Header */}
       <header className="text-center p-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl mb-6">
         <h1 className="text-3xl font-bold">Hello, I am Amit Sharma</h1>
         <p className="mt-2 text-lg">Professional DevOps Engineer 🚀</p>
@@ -58,7 +65,15 @@ function App() {
           <LoginForm setUser={setUser} />
         </div>
       ) : (
-        <p className="mb-6 text-green-600 font-semibold">Logged in as {user}</p>
+        <div className="mb-6 flex justify-between items-center bg-green-100 p-4 rounded">
+          <p className="text-green-800 font-semibold">Logged in as {user}</p>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
       )}
 
       {/* Comments */}

@@ -13,7 +13,7 @@ regex = ".*node_modules/.*"
 # Ignore package-lock.json secrets like default password or JWT secret
 [[rules]]
 description = "Ignore package-lock.json default secrets"
-regex = "***REMOVED***|***REMOVED***"
+regex = "12345|SECRET_KEY"
 
 # Ignore .env file if accidentally present
 [[rules]]
