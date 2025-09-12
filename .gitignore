@@ -43,3 +43,4 @@ snap/
 clean-repo/
 .git-credentials
 .gitconfig
+.env
