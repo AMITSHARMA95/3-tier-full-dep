@@ -4,9 +4,12 @@ FROM node:18
 # Working directory
 WORKDIR /app
 
-# Copy content (abhi folder empty h)
+# Copy all files
 COPY . .
 
-# Default command (placeholder)
-CMD ["node", "index.js"]
+# Install dependencies
+RUN npm install
+
+# Correct entry point
+CMD ["node", "server.js"]
 

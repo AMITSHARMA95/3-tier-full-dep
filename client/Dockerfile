@@ -1,8 +1,13 @@
-# Node.js base image
 FROM node:18
 
 WORKDIR /app
+
+# Copy all files
 COPY . .
 
-CMD ["node", "index.js"]
+# Install dependencies
+RUN npm install
+
+# Start the client app
+CMD ["npm", "start"]
 
